@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final editController = TextEditingController();
   final chipIndex = 0.obs;
+  final deleting = false.obs;
 
   @override
   void onInit() {
@@ -23,8 +24,18 @@ class HomeController extends GetxController {
     // çalıştır demek oluyor. Yani tasks'a yeni bir item eklendiğinde bunu database'e yaz demiş oluyoruz.
   }
 
+  @override
+  void onClose() {
+    editController.dispose();
+    super.onClose();
+  }
+
   void changeChipIndex(int value) {
     chipIndex.value = value;
+  }
+
+  void changeDleting(bool value) {
+    deleting.value = value;
   }
 
   bool addTask(Task task) {
@@ -33,5 +44,9 @@ class HomeController extends GetxController {
     }
     tasks.add(task);
     return true;
+  }
+
+  void deleteTask(Task task) {
+    tasks.remove(task);
   }
 }
