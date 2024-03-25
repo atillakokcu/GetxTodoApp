@@ -12,6 +12,7 @@ class HomeController extends GetxController {
   final editController = TextEditingController();
   final chipIndex = 0.obs;
   final deleting = false.obs;
+  final taskk = Rx<Task?>(null);
 
   @override
   void onInit() {
@@ -38,6 +39,10 @@ class HomeController extends GetxController {
     deleting.value = value;
   }
 
+  void chnageTask(Task? task) {
+    taskk.value = task;
+  }
+
   bool addTask(Task task) {
     if (tasks.contains(task)) {
       return false;
@@ -48,5 +53,24 @@ class HomeController extends GetxController {
 
   void deleteTask(Task task) {
     tasks.remove(task);
+  }
+
+  updateTask(Task task, String title) {
+    var todos = task.todos ?? [];
+
+    if (containeTodo(todos, title)) {
+      return false;
+    }
+    var todo = {'title': title, 'done': false};
+    todos.add(todo);
+    var newTask = task.copyWith(todos: todos);
+    int oldIndex = tasks.indexOf(task);
+    tasks[oldIndex] = newTask;
+    tasks.refresh();
+    return true;
+  }
+
+  bool containeTodo(List todos, String title) {
+    return todos.any((element) => element['title'] == title);
   }
 }
